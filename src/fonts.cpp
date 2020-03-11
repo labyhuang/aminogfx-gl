@@ -176,7 +176,7 @@ void AminoFont::preInit(Nan::NAN_METHOD_ARGS_TYPE info) {
     this->fontData.Reset(bufferObj);
 
     //create atlas
-    atlas = texture_atlas_new(512, 512, 1); //depth must be 1
+    atlas = texture_atlas_new(2048, 2048, 1); //depth must be 1
 
     if (!atlas) {
         Nan::ThrowTypeError("could not create atlas");
