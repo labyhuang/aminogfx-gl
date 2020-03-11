@@ -897,7 +897,7 @@ EGLSurface AminoGfxRPi::createDispmanxSurface() {
     DISPMANX_DISPLAY_HANDLE_T dispman_display = vc_dispmanx_display_open(0); //LCD
     DISPMANX_UPDATE_HANDLE_T dispman_update = vc_dispmanx_update_start(0);
 
-    int LAYER = 0;
+    int LAYER = 1;
     VC_RECT_T dst_rect;
     VC_RECT_T src_rect;
 
@@ -920,7 +920,7 @@ EGLSurface AminoGfxRPi::createDispmanxSurface() {
     dispman_alpha.mask = 0;
     */
 
-    dispman_alpha.flags = DISPMANX_FLAGS_ALPHA_FIXED_ALL_PIXELS;
+    dispman_alpha.flags = DISPMANX_FLAGS_ALPHA_FROM_SOURCE;
     dispman_alpha.opacity = 0xFF;
     dispman_alpha.mask = 0;
 
