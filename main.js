@@ -83,7 +83,7 @@ AminoGfx.prototype.init = function () {
   this.setRoot(this.createGroup())
 
     // input handler
-  this.inputHandler = input.createEventHandler(this)
+  // this.inputHandler = input.createEventHandler(this)
 
     // process handler
     /*
@@ -2659,9 +2659,9 @@ exports.makeProps = makeProps
 exports.AminoWeakReference = native.AminoWeakReference
 
 // input
-const input = require('./src/core/aminoinput')
+// const input = require('./src/core/aminoinput')
 
 // initialize input handler
-input.init()
+// input.init()
 
-exports.input = input
+// exports.input = input
