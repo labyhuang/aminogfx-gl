@@ -7,9 +7,9 @@
 #include "fonts/utf8-utils.h"
 
 //debug
-#define DEBUG_RENDERER false
-#define DEBUG_FONT_TEXTURE false
-#define DEBUG_FONT_UPDATES false
+#define DEBUG_RENDERER true
+#define DEBUG_FONT_TEXTURE true
+#define DEBUG_FONT_UPDATES true
 
 #define MEASURE_FPS true
 #define SHOW_RENDERER_ERRORS true
@@ -835,8 +835,8 @@ void AminoGfx::fireEvent(v8::Local<v8::Object> &evt) {
             //call
             int argc = 1;
             v8::Local<v8::Value> argv[1] = { evt };
-
-            func->Call(obj, argc, argv);
+            Nan::Call(func, obj, argc, argv);
+            // func->Call(obj, argc, argv);
         }
     }
 }

@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-#define DEBUG_FONTS false
+#define DEBUG_FONTS true
 
 //
 // AminoFonts

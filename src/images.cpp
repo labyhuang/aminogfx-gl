@@ -13,7 +13,7 @@ extern "C" {
     #include <png.h>
 }
 
-#define DEBUG_IMAGES false
+#define DEBUG_IMAGES true
 #define DEBUG_IMAGES_CONSOLE true
 
 //
@@ -971,7 +971,8 @@ NAN_METHOD(AminoTexture::LoadTextureFromImage) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("already loading") };
 
-        callback->Call(info.This(), argc, argv);
+        // callback->Call(info.This(), argc, argv);
+        Nan::Call(callback, info.This(), argc, argv);
         return;
     }
 
@@ -985,7 +986,8 @@ NAN_METHOD(AminoTexture::LoadTextureFromImage) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("image not loaded") };
 
-        callback->Call(info.This(), argc, argv);
+        // callback->Call(info.This(), argc, argv);
+        Nan::Call(callback, info.This(), argc, argv);
         return;
     }
 
@@ -1098,7 +1100,8 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("already loading") };
 
-        callback->Call(info.This(), argc, argv);
+        // callback->Call(info.This(), argc, argv);
+        Nan::Call(callback, info.This(), argc, argv);
         return;
     }
 
@@ -1112,7 +1115,8 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("missing video data") };
 
-        callback->Call(info.This(), argc, argv);
+        // callback->Call(info.This(), argc, argv);
+        Nan::Call(callback, info.This(), argc, argv);
         return;
     }
 
@@ -1147,7 +1151,8 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error(obj->videoPlayer->getLastError().c_str()) };
 
-        callback->Call(info.This(), argc, argv);
+        // callback->Call(info.This(), argc, argv);
+        Nan::Call(callback, info.This(), argc, argv);
 
         uv_mutex_lock(&obj->videoLock);
 
@@ -1410,8 +1415,8 @@ void AminoTexture::handleFireVideoEvent(JSCallbackUpdate *update) {
     int argc = 1;
     v8::Local<v8::Value> argv[] = { Nan::New<v8::String>(event->c_str()).ToLocalChecked() };
 
-    fireEventFunc->Call(handle(), argc, argv);
-
+    // fireEventFunc->Call(handle(), argc, argv);
+Nan::Call(fireEventFunc, handle(), argc, argv);
     delete event;
 }
 
@@ -1567,7 +1572,8 @@ NAN_METHOD(AminoTexture::LoadTextureFromFont) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("already loading") };
 
-        callback->Call(info.This(), argc, argv);
+        // callback->Call(info.This(), argc, argv);
+        Nan::Call(callback, info.This(), argc, argv);
         return;
     }
 

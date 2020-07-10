@@ -1,7 +1,7 @@
 #include "base_weak.h"
 
-#define DEBUG_WEAK false
-
+#define DEBUG_WEAK true
+#define _WEAK true
 //
 // AminoWeakReference
 //
@@ -10,7 +10,7 @@
  * Construct weak reference.
  */
 AminoWeakReference::AminoWeakReference(v8::Local<v8::Object> &value) {
-    if (DEBUG_WEAK) {
+    if (_WEAK) {
         printf("AminoWeakReference()\n");
     }
 
@@ -25,7 +25,7 @@ AminoWeakReference::AminoWeakReference(v8::Local<v8::Object> &value) {
  * Destructor.
  */
 AminoWeakReference::~AminoWeakReference() {
-    if (DEBUG_WEAK) {
+    if (_WEAK) {
         printf("~AminoWeakReference()\n");
     }
 
@@ -45,7 +45,7 @@ bool AminoWeakReference::hasReference() {
  * Get value.
  */
 v8::Local<v8::Object> AminoWeakReference::getValue() {
-    if (DEBUG_WEAK) {
+    if (_WEAK) {
         printf("AminoWeakReference::getValue()\n");
     }
 

@@ -1,7 +1,7 @@
 #include "renderer.h"
 
-#define DEBUG_RENDERER false
-#define DEBUG_RENDERER_ERRORS false
+#define DEBUG_RENDERER true
+#define DEBUG_RENDERER_ERRORS true
 #define DEBUG_FONT_PERFORMANCE 0
 
 /**
@@ -114,7 +114,8 @@ void AminoRenderer::setupPerspective(v8::Local<v8::Object> &perspective) {
         v8::Local<v8::Value> orthographicValue = orthographicMaybe.ToLocalChecked();
 
         if (orthographicValue->IsBoolean()) {
-            orthographic = orthographicValue->BooleanValue();
+            // orthographic = orthographicValue->BooleanValue();
+            orthographic = Nan::To<bool>(orthographicValue).FromJust();
         }
     }
 
@@ -166,7 +167,7 @@ void AminoRenderer::setupPerspective(v8::Local<v8::Object> &perspective) {
         v8::Local<v8::Value> value = vpMaybe.ToLocalChecked();
 
         if (value->IsArray()) {
-            v8::Handle<v8::Array> arr = v8::Handle<v8::Array>::Cast(value);
+            v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(value);
             std::size_t count = arr->Length();
 
             assert(count == 2);
@@ -183,7 +184,7 @@ void AminoRenderer::setupPerspective(v8::Local<v8::Object> &perspective) {
         v8::Local<v8::Value> value = srcMaybe.ToLocalChecked();
 
         if (value->IsArray()) {
-            v8::Handle<v8::Array> arr = v8::Handle<v8::Array>::Cast(value);
+            v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(value);
             std::size_t count = arr->Length();
 
             assert(count == 8);
@@ -202,7 +203,7 @@ void AminoRenderer::setupPerspective(v8::Local<v8::Object> &perspective) {
         v8::Local<v8::Value> value = dstMaybe.ToLocalChecked();
 
         if (value->IsArray()) {
-            v8::Handle<v8::Array> arr = v8::Handle<v8::Array>::Cast(value);
+            v8::Local<v8::Array> arr = v8::Local<v8::Array>::Cast(value);
             std::size_t count = arr->Length();
 
             assert(count == 8);

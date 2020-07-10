@@ -1,6 +1,6 @@
 'use strict'
 
-const DEBUG = false
+const DEBUG = true
 const DEBUG_ERRORS = true
 
 if (DEBUG) {
@@ -51,42 +51,42 @@ AminoGfx.prototype.init = function () {
     console.log('AminoGfx.init()')
   }
 
-    // initialize bindings
+  // initialize bindings
   this.amino = this
 
   makeProps(this, {
-        // position (auto set)
+    // position (auto set)
     x: -1,
     y: -1,
 
-        // QHD size
+    // QHD size
     w: 640,
     h: 360,
 
-        // color
+    // color
     opacity: 1,
     fill: '#000000',
     r: 0,
     g: 0,
     b: 0,
 
-        // title
+    // title
     title: 'AminoGfx OpenGL',
 
-        // stats
+    // stats
     showFPS: false // opt-out
   })
 
   this.fill.watch(watchFill)
 
-    // root wrapper
+  // root wrapper
   this.setRoot(this.createGroup())
 
-    // input handler
+  // input handler
   // this.inputHandler = input.createEventHandler(this)
 
-    // process handler
-    /*
+  // process handler
+  /*
     process.on('SIGINT', () => {
         console.log('-> CTRL-C');
 
@@ -118,12 +118,12 @@ function watchFill (value, prop, obj) {
  */
 function parseRGBString (fill) {
   if (typeof fill === 'string') {
-        // strip off any leading #
+    // strip off any leading #
     if (fill.substring(0, 1) === '#') {
       fill = fill.substring(1)
     }
 
-        // pull out the components
+    // pull out the components
     const r = parseInt(fill.substring(0, 2), 16)
     const g = parseInt(fill.substring(2, 4), 16)
     const b = parseInt(fill.substring(4, 6), 16)
@@ -148,20 +148,20 @@ function parseRGBString (fill) {
  * Start renderer.
  */
 AminoGfx.prototype.start = function (done) {
-    // pass to native code
+  // pass to native code
   this._start(err => {
     if (err) {
       done.call(this, err)
       return
     }
 
-        // runtime info
+    // runtime info
     this.runtime.aminogfx = packageInfo.version
 
-        // ready (Note: this points to the instance)
+    // ready (Note: this points to the instance)
     done.call(this, err)
 
-        // check root
+    // check root
     if (!this.root) {
       throw new Error('Missing root!')
     }
@@ -305,13 +305,13 @@ AminoGfx.prototype.createText = function (attrs) {
  * Handle an event.
  */
 AminoGfx.prototype.handleEvent = function (evt) {
-    // debug
-    // console.log('Event: ' + JSON.stringify(evt));
+  // debug
+  // console.log('Event: ' + JSON.stringify(evt));
 
-    // add timestamp
+  // add timestamp
   evt.time = Date.now()
 
-    // pass to event processor
+  // pass to event processor
   this.inputHandler.processEvent(evt)
 }
 
@@ -319,7 +319,7 @@ AminoGfx.prototype.handleEvent = function (evt) {
  * Destroy renderer.
  */
 AminoGfx.prototype.destroy = function () {
-    // clear root copy
+  // clear root copy
   this.root = null
 
   this._destroy()
@@ -403,18 +403,18 @@ AminoGfx.prototype.findNodesAtXY = function (pt, filter) {
 }
 
 function findNodesAtXY (root, pt, filter, tab) {
-    // verify
+  // verify
   if (!root || !root.visible()) {
     return []
   }
 
-    // debug
-    // console.log(tab + '   xy', pt.x, pt.y, root.id());
+  // debug
+  // console.log(tab + '   xy', pt.x, pt.y, root.id());
 
-    // convert to root coordinates
+  // convert to root coordinates
   const tpt = pt.minus(root.x(), root.y()).divide(root.sx(), root.sy())
 
-    // handle children first, then the parent/root
+  // handle children first, then the parent/root
   let res = []
 
   if (filter) {
@@ -423,7 +423,7 @@ function findNodesAtXY (root, pt, filter, tab) {
     }
   }
 
-    // check children
+  // check children
   if (root.children && root.children.length) {
     for (let i = root.children.length - 1; i >= 0; i--) {
       const node = root.children[i]
@@ -433,7 +433,7 @@ function findNodesAtXY (root, pt, filter, tab) {
     }
   }
 
-    // check root
+  // check root
   if (root.contains && root.contains(tpt)) {
     res.push(root)
   }
@@ -463,7 +463,7 @@ function findNodeAtXY (root, x, y, tab) {
   tx /= root.sx()
   ty /= root.sy()
 
-    // console.log(tab + "   xy="+tx+","+ty);
+  // console.log(tab + "   xy="+tx+","+ty);
 
   if (root.cliprect && root.clipRect()) {
     if (tx < 0) {
@@ -484,7 +484,7 @@ function findNodeAtXY (root, x, y, tab) {
   }
 
   if (root.children) {
-        // console.log(tab+"children = ",root.children.length);
+    // console.log(tab+"children = ",root.children.length);
 
     for (let i = root.children.length - 1; i >= 0; i--) {
       const node = root.children[i]
@@ -496,10 +496,10 @@ function findNodeAtXY (root, x, y, tab) {
     }
   }
 
-    // console.log(tab+"contains " + tx+' '+ty);
+  // console.log(tab+"contains " + tx+' '+ty);
 
   if (root.contains && root.contains(tx, ty)) {
-        // console.log(tab,"inside!",root.getId());
+    // console.log(tab,"inside!",root.getId());
 
     return root
   }
@@ -517,15 +517,15 @@ AminoGfx.prototype.globalToLocal = function (pt, node) {
 }
 
 function convertGlobalToLocal (pt, node) {
-    // check parent
+  // check parent
   if (node.parent) {
     pt = convertGlobalToLocal(pt, node.parent)
   }
 
   return input.makePoint(
-        (pt.x - node.x()) / node.sx(),
-        (pt.y - node.y()) / node.sy()
-    )
+    (pt.x - node.x()) / node.sx(),
+    (pt.y - node.y()) / node.sy()
+  )
 }
 
 /*
@@ -584,40 +584,40 @@ Group.prototype.init = function () {
     console.log('Group.init()')
   }
 
-    // bindings
+  // bindings
   makeProps(this, {
     id: '',
 
-        // visibility
+    // visibility
     visible: true,
     opacity: 1,
 
-        // position
+    // position
     x: 0,
     y: 0,
     z: 0,
 
-        // size
+    // size
     w: 100,
     h: 100,
 
-        // origin
+    // origin
     originX: 0,
     originY: 0,
 
-        // scaling
+    // scaling
     sx: 1,
     sy: 1,
 
-        // rotation
+    // rotation
     rx: 0,
     ry: 0,
     rz: 0,
 
-        // clipping
+    // clipping
     clipRect: false,
 
-        // 3D rendering (depth test)
+    // 3D rendering (depth test)
     depth: false
   })
 
@@ -721,7 +721,7 @@ Group.prototype.insertBefore = function (item, sibling) {
   const pos = this.children.indexOf(sibling)
 
   if (pos == -1) {
-        // add at end
+    // add at end
     this.add(item)
 
     return false
@@ -737,7 +737,7 @@ Group.prototype.insertAfter = function (item, sibling) {
   const pos = this.children.indexOf(sibling)
 
   if (pos == -1) {
-        // add at end
+    // add at end
     this.add(item)
 
     return false
@@ -753,7 +753,7 @@ Group.prototype.remove = function () {
   const count = arguments.length
 
   if (count === 0) {
-        // special case: remove from parent
+    // special case: remove from parent
     if (this.parent) {
       this.parent.remove(this)
     }
@@ -829,14 +829,14 @@ Group.prototype.find = function (pattern) {
   const results = new FindResults()
 
   if (pattern.indexOf('#') == 0) {
-        // id
+    // id
     const id = pattern.substring(1)
 
     results.children = treeSearch(this, false, function (child) {
       return (child.id().toLowerCase() == id)
     })
   } else {
-        // look for class name (e.g. AminoRect)
+    // look for class name (e.g. AminoRect)
     pattern = 'amino' + pattern.toLowerCase()
 
     results.children = treeSearch(this, false, function (child) {
@@ -880,7 +880,7 @@ function FindResults () {
     }
   }
 
-    // TODO review
+  // TODO review
   makefindprop(this, 'visible')
   makefindprop(this, 'fill')
   makefindprop(this, 'filled')
@@ -905,34 +905,34 @@ Rect.prototype.init = function () {
     console.log('Rect.init()')
   }
 
-    // properties
+  // properties
   makeProps(this, {
     id: '',
     visible: true,
 
-        // position
+    // position
     x: 0,
     y: 0,
     z: 0,
 
-        // size
+    // size
     w: 100,
     h: 100,
 
-        // origin
+    // origin
     originX: 0,
     originY: 0,
 
-        // rotation
+    // rotation
     rx: 0,
     ry: 0,
     rz: 0,
 
-        // scaling
+    // scaling
     sx: 1,
     sy: 1,
 
-        // white
+    // white
     fill: '#ffffff',
     r: 1,
     g: 1,
@@ -940,7 +940,7 @@ Rect.prototype.init = function () {
     opacity: 1.0
   })
 
-    // special
+  // special
   this.fill.watch(watchFill)
 }
 
@@ -992,35 +992,35 @@ ImageView.prototype.init = function () {
     id: '',
     visible: true,
 
-        // positon
+    // positon
     x: 0,
     y: 0,
     z: 0,
 
-        // size
+    // size
     w: 100,
     h: 100,
 
-        // origin
+    // origin
     originX: 0,
     originY: 0,
 
-        // scaling
+    // scaling
     sx: 1,
     sy: 1,
 
-        // rotation
+    // rotation
     rx: 0,
     ry: 0,
     rz: 0,
 
-        // texture coordinates
+    // texture coordinates
     left: 0,
     right: 1,
     top: 0,
     bottom: 1,
 
-        // image
+    // image
     src: null,
     image: null,
     opacity: 1.0,
@@ -1030,12 +1030,12 @@ ImageView.prototype.init = function () {
     repeat: 'no-repeat'
   })
 
-    // actually load the image
+  // actually load the image
   this.src.watch(setSrc)
 
-    // when the image is loaded, update the dimensions
+  // when the image is loaded, update the dimensions
   this.image.watch(texture => {
-        // set size
+    // set size
     applySize(texture, this.size(), this.position())
   })
 
@@ -1048,12 +1048,12 @@ ImageView.prototype.init = function () {
   })
 
   this.position.watch(pos => {
-        // new texture position
+    // new texture position
     applySize(this.image(), this.size(), pos)
   })
 
   this.size.watch(mode => {
-        // new mode
+    // new mode
     applySize(this.image(), mode, this.position())
   })
 
@@ -1069,25 +1069,25 @@ ImageView.prototype.init = function () {
         break
 
       case 'stretch':
-                // keep size
+        // keep size
         break
 
       case 'cover':
       case 'contain':
-                // cover
+        // cover
         if (texture) {
           const w = self.w()
           const h = self.h()
           let imgW = texture.w
           let imgH = texture.h
 
-                    // fit width
+          // fit width
           imgH *= w / imgW
           imgW = w
 
           if (mode === 'cover') {
             if (imgH < h) {
-                            // stretch height
+              // stretch height
               imgW *= h / imgH
               imgH = h
             }
@@ -1100,10 +1100,10 @@ ImageView.prototype.init = function () {
             }
           }
 
-                    // debug
-                    // console.log('fit ' + imgW + 'x' + imgH + ' to ' + w + 'x' + h);
+          // debug
+          // console.log('fit ' + imgW + 'x' + imgH + ' to ' + w + 'x' + h);
 
-                    // position
+          // position
           const pos = position.split(' ')
           let posHorz = 'center'
           let posVert = 'center'
@@ -1126,9 +1126,9 @@ ImageView.prototype.init = function () {
             }
           }
 
-                    // center texture
+          // center texture
 
-                    // 1) horz
+          // 1) horz
           if (posHorz === 'center') {
             const horz = (imgW - w) / 2 / imgW
 
@@ -1146,7 +1146,7 @@ ImageView.prototype.init = function () {
             self.right(1)
           }
 
-                    // 2) vert
+          // 2) vert
           if (posVert === 'center') {
             const vert = (imgH - h) / 2 / imgH
 
@@ -1196,7 +1196,7 @@ function loadTexture (obj, img) {
       return
     }
 
-        // use texture
+    // use texture
     setImage(texture, obj)
   })
 }
@@ -1217,7 +1217,7 @@ function loadVideoTexture (obj, video) {
       return
     }
 
-        // use texture
+    // use texture
     setImage(texture, obj)
   })
 }
@@ -1233,21 +1233,21 @@ function setSrc (src, prop, obj) {
     return
   }
 
-    // check image (JPEG, PNG)
+  // check image (JPEG, PNG)
   if (src instanceof AminoImage) {
-        // load texture
+    // load texture
     loadTexture(obj, src)
     return
   }
 
-    // check video
+  // check video
   if (src instanceof AminoVideo) {
-        // load video texture
+    // load video texture
     loadVideoTexture(obj, src)
     return
   }
 
-    // load image from source
+  // load image from source
   const img = new AminoImage()
 
   obj.tmpImage = img
@@ -1260,15 +1260,15 @@ function setSrc (src, prop, obj) {
         console.log('could not load image: ' + err.message)
       }
 
-            // set texture to null
+      // set texture to null
       setImage(null, obj)
       return
     }
 
-        // debug
-        // console.log('image buffer: w=' + ibuf.w + ' h=' + ibuf.h + ' bpp=' + ibuf.bpp + ' len=' + ibuf.buffer.length);
+    // debug
+    // console.log('image buffer: w=' + ibuf.w + ' h=' + ibuf.h + ' bpp=' + ibuf.bpp + ' len=' + ibuf.buffer.length);
 
-        // load texture
+    // load texture
     loadTexture(obj, img)
   }
 
@@ -1331,7 +1331,7 @@ ImageView.prototype.destroy = function () {
 //
 
 class PixelView extends ImageView {
-    /**
+  /**
      * Constructor.
      */
   constructor (amino) {
@@ -1342,10 +1342,10 @@ class PixelView extends ImageView {
 AminoGfx.PixelView = PixelView
 
 PixelView.prototype.init = function () {
-    // get Rect properties
+  // get Rect properties
   ImageView.prototype.init.call(this)
 
-    // bindings
+  // bindings
   makeProps(this, {
     pw: 100,
     ph: 100,
@@ -1393,7 +1393,7 @@ PixelView.prototype.initDone = function () {
     self.updateTexture()
   }
 
-    // texture
+  // texture
   this.texture = this.amino.createTexture()
   this.image(this.texture)
 
@@ -1441,33 +1441,33 @@ PixelView.prototype.setPixeli32 = function (x, y, int) {
 const Polygon = AminoGfx.Polygon
 
 Polygon.prototype.init = function () {
-    // bindings
+  // bindings
   makeProps(this, {
     id: '',
     visible: true,
 
-        // position
+    // position
     x: 0,
     y: 0,
     z: 0,
 
-        // scaling
+    // scaling
     sx: 1,
     sy: 1,
 
-        // rotation
+    // rotation
     rx: 0,
     ry: 0,
     rz: 0,
 
-        // fill
+    // fill
     fill: '#ff0000',
     fillR: 1,
     fillG: 0,
     fillB: 0,
     opacity: 1.0,
 
-        // properties
+    // properties
     filled: true,
 
     dimension: 2, // 2D
@@ -1492,7 +1492,7 @@ function setFill (val, prop, obj) {
  * Check if point inside of polygon.
  */
 Polygon.prototype.contains = function () {
-    // TODO check polygon coords
+  // TODO check polygon coords
   return false
 }
 
@@ -1523,41 +1523,41 @@ Polygon.prototype.rotate = rotateFunc
 const Model = AminoGfx.Model
 
 Model.prototype.init = function () {
-    // bindings
+  // bindings
   makeProps(this, {
     id: '',
     visible: true,
 
-        // position
+    // position
     x: 0,
     y: 0,
     z: 0,
 
-        // size
+    // size
     w: 0,
     h: 0,
 
-        // origin
+    // origin
     originX: 0,
     originY: 0,
 
-        // scaling
+    // scaling
     sx: 1,
     sy: 1,
 
-        // rotation
+    // rotation
     rx: 0,
     ry: 0,
     rz: 0,
 
-        // fill (color mode)
+    // fill (color mode)
     fill: '#ff0000',
     fillR: 1,
     fillG: 0,
     fillB: 0,
     opacity: 1.0,
 
-        // properties
+    // properties
     vertices: null,
     indices: null,
     normals: null, // enables lighting
@@ -1618,7 +1618,7 @@ Model.prototype.destroy = function () {
 //
 
 class Circle extends Polygon {
-    /**
+  /**
      * Constructor.
      */
   constructor (amino) {
@@ -1629,10 +1629,10 @@ class Circle extends Polygon {
 AminoGfx.Circle = Circle
 
 Circle.prototype.init = function () {
-    // get Polygon properties
+  // get Polygon properties
   Polygon.prototype.init.call(this)
 
-    // bindings
+  // bindings
   makeProps(this, {
     radius: 0,
     steps: 30
@@ -1640,7 +1640,7 @@ Circle.prototype.init = function () {
 
   this.dimension(2)
 
-    // monitor radius updates
+  // monitor radius updates
   this.radius.watch(r => {
     const steps = this.steps()
     const points = new Float32Array(steps * 2)
@@ -1685,13 +1685,13 @@ Object.defineProperty(AminoImage.prototype, 'src', {
     this.abort()
 
     if (!src) {
-            // special case
+      // special case
       return
     }
 
-        // check file
+    // check file
     if (typeof src === 'string') {
-            // check URLs
+      // check URLs
       if (src.indexOf('http://') === 0 || src.indexOf('https://') === 0) {
         this.request = request({
           method: 'GET',
@@ -1711,19 +1711,19 @@ Object.defineProperty(AminoImage.prototype, 'src', {
             return
           }
 
-                    // debug
-                    // console.log('image: buffer=' + Buffer.isBuffer(buffer) + ' len=' + buffer.length);
+          // debug
+          // console.log('image: buffer=' + Buffer.isBuffer(buffer) + ' len=' + buffer.length);
 
-                    // native call
+          // native call
           this.loadImage(buffer, this.onload, this.maxWH)
         })
 
         return
       }
 
-            // read file async
+      // read file async
       fs.readFile(src, (err, data) => {
-                // check error
+        // check error
         if (err) {
           if (this.onload) {
             this.onload(err)
@@ -1732,9 +1732,9 @@ Object.defineProperty(AminoImage.prototype, 'src', {
           return
         }
 
-                // get image
+        // get image
         this.loadImage(data, (err, img) => {
-                    // call onload
+          // call onload
           if (this.onload) {
             this.onload(err, img)
           }
@@ -1744,7 +1744,7 @@ Object.defineProperty(AminoImage.prototype, 'src', {
       return
     }
 
-        // convert buffer
+    // convert buffer
     if (!Buffer.isBuffer(src)) {
       if (this.onload) {
         this.onload(new Error('buffer expected!'))
@@ -1753,7 +1753,7 @@ Object.defineProperty(AminoImage.prototype, 'src', {
       return
     }
 
-        // native call
+    // native call
     this.loadImage(src, this.onload, this.maxWH)
   }
 })
@@ -1788,9 +1788,9 @@ AminoFonts.prototype.init = function () {
   this.fonts = {}
   this.cache = {}
 
-    // default fonts
+  // default fonts
   this.registerFont({
-        // Source Sans Pro (https://fonts.google.com/specimen/Source+Sans+Pro)
+    // Source Sans Pro (https://fonts.google.com/specimen/Source+Sans+Pro)
     name: 'source',
     weights: {
       400: {
@@ -1799,7 +1799,7 @@ AminoFonts.prototype.init = function () {
     }
   })
 
-    // default
+  // default
   this.defaultFont = this.fonts.source
 }
 
@@ -1807,18 +1807,18 @@ AminoFonts.prototype.init = function () {
  * Register a font.
  */
 AminoFonts.prototype.registerFont = function (font) {
-    // check existing font (immutable)
+  // check existing font (immutable)
   if (this.fonts[font.name]) {
     return this
   }
 
-    // add new font
+  // add new font
   this.fonts[font.name] = font
 
-    // collect weights
+  // collect weights
   const weightList = []
 
-  for (let weight in font.weights) {
+  for (const weight in font.weights) {
     weightList.push(weight)
   }
 
@@ -1841,9 +1841,9 @@ AminoFonts.prototype.getFont = function (descr, callback) {
   let weight = descr.weight || 400
   let style = descr.style || 'normal'
 
-    // console.log('getFont() ' + name + ' ' + size + ' ' + weight + ' ' + style);
+  // console.log('getFont() ' + name + ' ' + size + ' ' + weight + ' ' + style);
 
-    // get font descriptor
+  // get font descriptor
   const font = this.fonts[name]
 
   if (!font) {
@@ -1856,15 +1856,15 @@ AminoFonts.prototype.getFont = function (descr, callback) {
     return this
   }
 
-    // find weight
+  // find weight
   let weightDesc = font.weights[weight]
 
   if (!weightDesc) {
-        // find closest
+    // find closest
     let closest = null
     let diff = 0
 
-    for (let item in font.weights) {
+    for (const item in font.weights) {
       const diff2 = Math.abs(weight - item)
 
       if (!closest || diff2 < diff) {
@@ -1882,11 +1882,11 @@ AminoFonts.prototype.getFont = function (descr, callback) {
     weight = closest
   }
 
-    // find style
+  // find style
   let styleDesc = weightDesc[style]
 
   if (!styleDesc) {
-        // fallback to normal
+    // fallback to normal
     styleDesc = weightDesc.normal
 
     if (!styleDesc) {
@@ -1897,7 +1897,7 @@ AminoFonts.prototype.getFont = function (descr, callback) {
     style = 'normal'
   }
 
-    // check cache
+  // check cache
   const key = name + '/' + weight + '/' + style
   const cached = this.cache[key]
 
@@ -1915,15 +1915,15 @@ AminoFonts.prototype.getFont = function (descr, callback) {
     return this
   }
 
-    // path
+  // path
   let dir = font.path
 
   if (!dir) {
-        // internal default path
+    // internal default path
     dir = path.join(__dirname, 'resources/')
   }
 
-    // load file
+  // load file
   const file = path.join(dir, styleDesc)
 
   const promise = new Promise((resolve, reject) => {
@@ -1933,7 +1933,7 @@ AminoFonts.prototype.getFont = function (descr, callback) {
         return
       }
 
-            // throws exception on error
+      // throws exception on error
       const font = new AminoFonts.Font(this, {
         data: data,
         file: file,
@@ -1978,7 +1978,7 @@ AminoFont.prototype.init = function () {
  * Load font size.
  */
 AminoFont.prototype.getSize = function (size, callback) {
-    // check cache
+  // check cache
   let fontSize = this.fontSizes[size]
 
   if (!fontSize) {
@@ -2018,16 +2018,16 @@ Texture.prototype.loadTexture = function (src, callback) {
   }
 
   if (src instanceof AminoImage) {
-        // image (JPEG, PNG)
+    // image (JPEG, PNG)
     this.loadTextureFromImage(src, callback)
   } else if (src instanceof AminoVideo) {
-        // video (file)
+    // video (file)
     this.loadTextureFromVideo(src, callback)
   } else if (Buffer.isBuffer(src)) {
-        // pixel buffer
+    // pixel buffer
     this.loadTextureFromBuffer(src, callback)
   } else if (src instanceof AminoFontSize) {
-        // font texture
+    // font texture
     this.loadTextureFromFont(src, callback)
   } else {
     throw new Error('unknown source')
@@ -2050,7 +2050,7 @@ Texture.prototype.addEventListener = function (event, callback) {
   let items = this.listeners[event]
 
   if (!items) {
-    items = [ callback ]
+    items = [callback]
     this.listeners[event] = items
   } else {
     items.push(callback)
@@ -2093,7 +2093,7 @@ Texture.prototype.fireEvent = function (event) {
     return
   }
 
-    // event handlers
+  // event handlers
   let items = this.listeners[event]
 
   if (items) {
@@ -2104,8 +2104,8 @@ Texture.prototype.fireEvent = function (event) {
     }
   }
 
-    // global handlers
-  items = this.listeners['_all']
+  // global handlers
+  items = this.listeners._all
 
   if (items) {
     const count = items.length
@@ -2127,34 +2127,34 @@ Text.prototype.init = function () {
     console.log('Text.init()')
   }
 
-    // properties
+  // properties
   makeProps(this, {
     id: '',
     visible: true,
 
-        // position
+    // position
     x: 0,
     y: 0,
     z: 0,
 
-        // size
+    // size
     w: 0,
     h: 0,
 
-        // origin
+    // origin
     originX: 0,
     originY: 0,
 
-        // scaling
+    // scaling
     sx: 1,
     sy: 1,
 
-        // rotation
+    // rotation
     rx: 0,
     ry: 0,
     rz: 0,
 
-        // font
+    // font
     text: '',
     fontSize: 20,
     fontName: 'source',
@@ -2162,33 +2162,33 @@ Text.prototype.init = function () {
     fontStyle: 'normal',
     font: null,
 
-        // color
+    // color
     r: 1,
     g: 1,
     b: 1,
     opacity: 1.0,
     fill: '#ffffff',
 
-        // alignment
+    // alignment
     align: 'left',
     vAlign: 'baseline',
     wrap: 'none',
 
-        // lines
+    // lines
     maxLines: 0
   })
 
   this.fill.watch(watchFill)
 
-    // TODO lines
-    // TODO textHeight
+  // TODO lines
+  // TODO textHeight
 }
 
 Text.prototype.initDone = function () {
-    // update font
+  // update font
   this.updateFont(null, null, this)
 
-    // watchers
+  // watchers
   this.fontName.watch(this.updateFont)
   this.fontWeight.watch(this.updateFont)
   this.fontSize.watch(this.updateFont)
@@ -2220,23 +2220,23 @@ let fontId = 0
  * Load the font.
  */
 Text.prototype.updateFont = function (val, prop, obj) {
-    // prevent race condition (earlier font is loaded later)
+  // prevent race condition (earlier font is loaded later)
   const id = fontId++
 
   obj.latestFontId = id
 
-    // get font
+  // get font
   fonts.getFont({
     name: obj.fontName(),
     size: obj.fontSize(),
     weight: obj.fontWeight(),
     style: obj.fontStyle()
   }, (err, font) => {
-        // handle errors
+    // handle errors
     if (err) {
       console.log('could not load font: ' + err.message)
 
-            // try default font
+      // try default font
       fonts.getFont({
         size: obj.fontSize()
       }, (err, font) => {
@@ -2257,9 +2257,9 @@ Text.prototype.updateFont = function (val, prop, obj) {
       return
     }
 
-        // attach font
+    // attach font
 
-        // console.log('got font: ' + JSON.stringify(font));
+    // console.log('got font: ' + JSON.stringify(font));
 
     if (obj.latestFontId === id) {
       obj.latestFontId = undefined
@@ -2383,7 +2383,7 @@ Anim.prototype.autoreverse = function (val) {
 }
 
 // Time function values.
-const timeFuncs = [ 'linear', 'cubicIn', 'cubicOut', 'cubicInOut' ]
+const timeFuncs = ['linear', 'cubicIn', 'cubicOut', 'cubicInOut']
 
 /**
  * Time function.
@@ -2428,7 +2428,7 @@ Anim.prototype.start = function (refTime) {
       console.log('after delay. making it.')
     }
 
-        // validate
+    // validate
     if (this._from == null) {
       throw new Error('missing from value')
     }
@@ -2437,7 +2437,7 @@ Anim.prototype.start = function (refTime) {
       throw new Error('missing to value')
     }
 
-        // native start
+    // native start
     this._start({
       from: this._from,
       to: this._to,
@@ -2458,7 +2458,7 @@ Anim.prototype.start = function (refTime) {
  * Create properties.
  */
 function makeProps (obj, props) {
-  for (let name in props) {
+  for (const name in props) {
     makeProp(obj, name, props[name])
   }
 
@@ -2473,7 +2473,7 @@ function makeProps (obj, props) {
  * @param val default value.
  */
 function makeProp (obj, name, val) {
-    /**
+  /**
      * Property function.
      *
      * Getter and setter.
@@ -2492,7 +2492,7 @@ function makeProp (obj, name, val) {
   prop.nativeListener = null
   prop.listeners = []
 
-    /**
+  /**
      * Add watch callback.
      *
      * Callback: (value, property, object)
@@ -2507,7 +2507,7 @@ function makeProp (obj, name, val) {
     return this
   }
 
-    /**
+  /**
      * Unwatch a registered function.
      */
   prop.unwatch = function (fun) {
@@ -2520,48 +2520,48 @@ function makeProp (obj, name, val) {
     this.listeners.splice(n, 1)
   }
 
-    /**
+  /**
      * Remove all listeners.
      */
   prop.unwatchAll = function () {
     this.listeners = []
   }
 
-    /**
+  /**
      * Getter function.
      */
   prop.get = function () {
     return this.value
   }
 
-    /**
+  /**
      * Setter function.
      */
   prop.set = function (v, obj, nativeCall) {
-        // check readonly
+    // check readonly
     if (this.readonly) {
-            // ignore any changes
+      // ignore any changes
       return obj
     }
 
-        // check if modified
+    // check if modified
     if (v === this.value) {
-            // debug
-            // console.log('not changed: ' + name);
+      // debug
+      // console.log('not changed: ' + name);
 
       return obj
     }
 
-        // update
+    // update
     this.value = v
 
-        // native listener
+    // native listener
     if (this.nativeListener && !nativeCall) {
-            // prevent recursion in case of updates from native side
+      // prevent recursion in case of updates from native side
       this.nativeListener(this.value, this.propId, obj)
     }
 
-        // fire listeners
+    // fire listeners
     for (let i = 0; i < this.listeners.length; i++) {
       this.listeners[i](this.value, this, obj)
     }
@@ -2569,7 +2569,7 @@ function makeProp (obj, name, val) {
     return obj
   }
 
-    /**
+  /**
      * Create animation.
      */
   prop.anim = function (attrs) {
@@ -2584,7 +2584,7 @@ function makeProp (obj, name, val) {
     const anim = new AminoGfx.Anim(obj.amino, obj, this.propId)
 
     if (attrs) {
-      for (let key in attrs) {
+      for (const key in attrs) {
         anim['_' + key] = attrs[key]
       }
     }
@@ -2592,7 +2592,7 @@ function makeProp (obj, name, val) {
     return anim
   }
 
-    /**
+  /**
      * Bind to other property.
      *
      * Optional: callback to modify value.
@@ -2610,34 +2610,34 @@ function makeProp (obj, name, val) {
 
     prop.listeners.push(watcher)
 
-        // apply current value
+    // apply current value
     watcher(prop())
 
     return this
   }
 
-    // Note: no unbind method -> use prop.unwatchAll()
+  // Note: no unbind method -> use prop.unwatchAll()
 
   obj.attr = function (attrs) {
-    for (let key in attrs) {
+    for (const key in attrs) {
       const prop = this[key]
 
       if (prop) {
         const value = attrs[key]
 
-                // check watch
+        // check watch
         if (typeof value === 'function') {
           prop.watch(value)
           return
         }
 
-                // check bindTo
+        // check bindTo
         if (value.name === 'AminoProperty') {
           prop.bindTo(value)
           return
         }
 
-                // normal assignment
+        // normal assignment
         prop(value)
       } else {
         console.log('unknown attribute: ' + key)
@@ -2647,7 +2647,7 @@ function makeProp (obj, name, val) {
     return this
   }
 
-    // attach
+  // attach
   obj[name] = prop
 }
 
