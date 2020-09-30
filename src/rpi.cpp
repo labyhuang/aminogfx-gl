@@ -1143,9 +1143,9 @@ bool AminoGfxRPi::startsWith(const char *pre, const char *str) {
 const char* INPUT_DIR = "/dev/input";
 
 void AminoGfxRPi::initInput() {
-    if ((getuid()) != 0) {
-        printf("you are not root. this might not work\n");
-    }
+    // if ((getuid()) != 0) {
+    //     printf("you are not root. this might not work\n");
+    // }
 
     DIR *dir;
     struct dirent *file;

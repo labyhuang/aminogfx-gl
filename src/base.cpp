@@ -11,7 +11,7 @@
 #define DEBUG_FONT_TEXTURE false
 #define DEBUG_FONT_UPDATES false
 
-#define MEASURE_FPS true
+#define MEASURE_FPS false
 #define SHOW_RENDERER_ERRORS true
 
 //

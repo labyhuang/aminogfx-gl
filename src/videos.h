@@ -11,7 +11,7 @@ extern "C" {
 }
 
 //cbxx FIXME
-#define DEBUG_VIDEOS true
+#define DEBUG_VIDEOS false
 
 class AminoVideoFactory;
 class AminoTexture;
