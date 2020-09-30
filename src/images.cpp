@@ -13,7 +13,7 @@ extern "C" {
     #include <png.h>
 }
 
-#define DEBUG_IMAGES true
+#define DEBUG_IMAGES false
 #define DEBUG_IMAGES_CONSOLE true
 
 //
@@ -971,7 +971,6 @@ NAN_METHOD(AminoTexture::LoadTextureFromImage) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("already loading") };
 
-        // callback->Call(info.This(), argc, argv);
         Nan::Call(callback, info.This(), argc, argv);
         return;
     }
@@ -986,7 +985,6 @@ NAN_METHOD(AminoTexture::LoadTextureFromImage) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("image not loaded") };
 
-        // callback->Call(info.This(), argc, argv);
         Nan::Call(callback, info.This(), argc, argv);
         return;
     }
@@ -1100,7 +1098,6 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("already loading") };
 
-        // callback->Call(info.This(), argc, argv);
         Nan::Call(callback, info.This(), argc, argv);
         return;
     }
@@ -1115,7 +1112,6 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("missing video data") };
 
-        // callback->Call(info.This(), argc, argv);
         Nan::Call(callback, info.This(), argc, argv);
         return;
     }
@@ -1149,9 +1145,9 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
 
     if (!obj->videoPlayer->initStream()) {
         int argc = 1;
-        v8::Local<v8::Value> argv[1] = { Nan::Error(obj->videoPlayer->getLastError().c_str()) };
+        std::string lastError = obj->videoPlayer->getLastError();
+        v8::Local<v8::Value> argv[1] = { Nan::Error(lastError.c_str()) };
 
-        // callback->Call(info.This(), argc, argv);
         Nan::Call(callback, info.This(), argc, argv);
 
         uv_mutex_lock(&obj->videoLock);
@@ -1184,7 +1180,7 @@ NAN_METHOD(AminoTexture::LoadTextureFromVideo) {
 void AminoTexture::createVideoTexture(AsyncValueUpdate *update, int state) {
     if (state == AsyncValueUpdate::STATE_APPLY) {
         //create texture on OpenGL thread
-        if (DEBUG_IMAGES) {
+        if (DEBUG_IMAGES || DEBUG_VIDEOS) {
             printf("-> createVideoTexture()\n");
         }
 
@@ -1247,6 +1243,7 @@ void AminoTexture::createVideoTexture(AsyncValueUpdate *update, int state) {
 
         //initialize
         uv_mutex_lock(&videoLock);
+
         if (videoPlayer) {
             if (DEBUG_VIDEOS) {
                 printf("-> init video player\n");
@@ -1254,6 +1251,7 @@ void AminoTexture::createVideoTexture(AsyncValueUpdate *update, int state) {
 
             videoPlayer->init();
         }
+
         uv_mutex_unlock(&videoLock);
     } else if (state == AsyncValueUpdate::STATE_DELETE) {
         //on main thread
@@ -1349,7 +1347,8 @@ void AminoTexture::handleVideoPlayerInitDone(JSCallbackUpdate *update) {
         }
     } else {
         //failed
-        const char *error = videoPlayer->getLastError().c_str();
+        std::string lastError = videoPlayer->getLastError();
+        const char *error = lastError.c_str();
 
         if (DEBUG_VIDEOS) {
             printf("-> error: %s\n", error);
@@ -1415,8 +1414,8 @@ void AminoTexture::handleFireVideoEvent(JSCallbackUpdate *update) {
     int argc = 1;
     v8::Local<v8::Value> argv[] = { Nan::New<v8::String>(event->c_str()).ToLocalChecked() };
 
-    // fireEventFunc->Call(handle(), argc, argv);
-Nan::Call(fireEventFunc, handle(), argc, argv);
+    Nan::Call(fireEventFunc, handle(), argc, argv);
+
     delete event;
 }
 
@@ -1572,7 +1571,6 @@ NAN_METHOD(AminoTexture::LoadTextureFromFont) {
         int argc = 1;
         v8::Local<v8::Value> argv[1] = { Nan::Error("already loading") };
 
-        // callback->Call(info.This(), argc, argv);
         Nan::Call(callback, info.This(), argc, argv);
         return;
     }

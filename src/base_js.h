@@ -15,11 +15,11 @@
 #define ASYNC_JS_UPDATE_CALLBACK  11
 #define ASYNC_UPDATE_CUSTOM      100
 
-#define DEBUG_BASE true
+#define DEBUG_BASE false
 
-#define DEBUG_THREADS true
-#define DEBUG_RESOURCES true
-#define DEBUG_REFERENCES true
+#define DEBUG_THREADS false
+#define DEBUG_RESOURCES false
+#define DEBUG_REFERENCES false
 
 class AminoJSObject;
 

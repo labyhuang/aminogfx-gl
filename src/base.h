@@ -23,7 +23,7 @@
 #include "vertex-buffer.h"
 #include "texture-font.h"
 
-#define DEBUG_CRASH true
+#define DEBUG_CRASH false
 
 const int GROUP = 1;
 const int RECT  = 2;

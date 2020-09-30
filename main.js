@@ -1,6 +1,6 @@
 'use strict'
 
-const DEBUG = true
+const DEBUG = false
 const DEBUG_ERRORS = true
 
 if (DEBUG) {
@@ -74,7 +74,7 @@ AminoGfx.prototype.init = function () {
     title: 'AminoGfx OpenGL',
 
     // stats
-    showFPS: false // opt-out
+    showFPS: true // opt-out
   })
 
   this.fill.watch(watchFill)
@@ -83,7 +83,7 @@ AminoGfx.prototype.init = function () {
   this.setRoot(this.createGroup())
 
   // input handler
-  // this.inputHandler = input.createEventHandler(this)
+  this.inputHandler = input.createEventHandler(this)
 
   // process handler
   /*
@@ -1190,7 +1190,7 @@ function loadTexture (obj, img) {
   texture.loadTextureFromImage(img, (err, texture) => {
     if (err) {
       if (DEBUG || DEBUG_ERRORS) {
-        console.log('could not load texture: ' + err.message)
+        console.log('could not load image texture: ' + err.message)
       }
 
       return
@@ -1211,7 +1211,7 @@ function loadVideoTexture (obj, video) {
   texture.loadTextureFromVideo(video, (err, texture) => {
     if (err) {
       if (DEBUG || DEBUG_ERRORS) {
-        console.log('could not load texture: ' + err.message)
+        console.log('could not load video texture: ' + err.message)
       }
 
       return
@@ -1793,8 +1793,54 @@ AminoFonts.prototype.init = function () {
     // Source Sans Pro (https://fonts.google.com/specimen/Source+Sans+Pro)
     name: 'source',
     weights: {
+      200: {
+        normal: 'SourceSansPro-ExtraLight.ttf',
+        italic: 'SourceSansPro-ExtraLightItalic.ttf'
+      },
+      300: {
+        normal: 'SourceSansPro-Light.ttf',
+        italic: 'SourceSansPro-LightItalic.ttf'
+      },
       400: {
-        normal: 'SourceSansPro-Regular.ttf'
+        normal: 'SourceSansPro-Regular.ttf',
+        italic: 'SourceSansPro-Italic.ttf'
+      },
+      600: {
+        normal: 'SourceSansPro-Semibold.ttf',
+        italic: 'SourceSansPro-SemiboldItalic.ttf'
+      },
+      700: {
+        normal: 'SourceSansPro-Bold.ttf',
+        italic: 'SourceSansPro-BoldItalic.ttf'
+      },
+      900: {
+        normal: 'SourceSansPro-Black.ttf',
+        italic: 'SourceSansPro-BlackItalic.ttf'
+      }
+    }
+  })
+
+  this.registerFont({
+    // Noto UI (https://fonts.google.com/specimen/Source+Sans+Pro)
+    name: 'noto-ui',
+    weights: {
+      400: {
+        normal: 'NotoSansUI-Regular.ttf',
+        italic: 'NotoSansUI-Italic.ttf'
+      },
+      700: {
+        normal: 'NotoSansUI-Bold.ttf',
+        italic: 'NotoSansUI-BoldItalic'
+      }
+    }
+  })
+
+  this.registerFont({
+    // Font-Awesome (https://github.com/FortAwesome/Font-Awesome/blob/master/fonts/fontawesome-webfont.ttf)
+    name: 'awesome',
+    weights: {
+      400: {
+        normal: 'fontawesome-webfont.ttf'
       }
     }
   })
@@ -2479,11 +2525,12 @@ function makeProp (obj, name, val) {
      * Getter and setter.
      */
   const prop = function AminoProperty (v, nativeCall) {
+    // filter null and undefined values (should be string)
     if (v != undefined) {
       return prop.set(v, obj, nativeCall)
-    } else {
-      return prop.get()
     }
+
+    return prop.get()
   }
 
   prop.value = val
@@ -2504,7 +2551,7 @@ function makeProp (obj, name, val) {
 
     this.listeners.push(fun)
 
-    return this
+    return obj
   }
 
   /**
@@ -2518,6 +2565,8 @@ function makeProp (obj, name, val) {
     }
 
     this.listeners.splice(n, 1)
+
+    return obj
   }
 
   /**
@@ -2525,6 +2574,8 @@ function makeProp (obj, name, val) {
      */
   prop.unwatchAll = function () {
     this.listeners = []
+
+    return obj
   }
 
   /**
@@ -2613,7 +2664,7 @@ function makeProp (obj, name, val) {
     // apply current value
     watcher(prop())
 
-    return this
+    return obj
   }
 
   // Note: no unbind method -> use prop.unwatchAll()
@@ -2644,7 +2695,7 @@ function makeProp (obj, name, val) {
       }
     }
 
-    return this
+    return obj
   }
 
   // attach
@@ -2659,9 +2710,9 @@ exports.makeProps = makeProps
 exports.AminoWeakReference = native.AminoWeakReference
 
 // input
-// const input = require('./src/core/aminoinput')
+const input = require('./src/core/aminoinput')
 
 // initialize input handler
-// input.init()
+input.init()
 
-// exports.input = input
+exports.input = input

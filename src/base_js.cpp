@@ -2,8 +2,8 @@
 
 #include <sstream>
 
-#define DEBUG_ASYNC true
-#define DEBUG_JS_INSTANCES true
+#define DEBUG_ASYNC false
+#define DEBUG_JS_INSTANCES false
 
 //
 //  AminoJSObjectFactory
@@ -219,7 +219,6 @@ void AminoJSObject::createInstance(Nan::NAN_METHOD_ARGS_TYPE info, AminoJSObject
             v8::Local<v8::Value> argv[0];
 
             Nan::Call(initFunc, info.This(), argc, argv);
-            // initFunc->Call(info.This(), argc, argv);
         }
     }
 
@@ -238,8 +237,8 @@ void AminoJSObject::createInstance(Nan::NAN_METHOD_ARGS_TYPE info, AminoJSObject
             //call
             int argc = 0;
             v8::Local<v8::Value> argv[0];
+
             Nan::Call(initDoneFunc, info.This(), argc, argv);
-            // initDoneFunc->Call(info.This(), argc, argv);
         }
     }
 
@@ -770,7 +769,6 @@ void AminoJSObject::updateProperty(std::string name, v8::Local<v8::Value> &value
     v8::Local<v8::Value> argv[] = { value, Nan::True() };
 
     Nan::Call(updateFunc, obj, argc, argv);
-    // updateFunc->Call(obj, argc, argv);
 
     if (DEBUG_BASE) {
         std::string str = toString(value);
@@ -1069,7 +1067,7 @@ void* AminoJSObject::FloatArrayProperty::getAsyncData(v8::Local<v8::Value> &valu
         vector = new std::vector<float>();
 
         for (std::size_t i = 0; i < count; i++) {
-            vector->push_back((float)(Nan::To<v8::Number>(arr->Get(i)).ToLocalChecked()->Value()));
+            vector->push_back((float)(Nan::To<v8::Number>(Nan::Get(arr, i).ToLocalChecked()).ToLocalChecked()->Value()));
         }
 
         valid = true;
@@ -1299,7 +1297,7 @@ void* AminoJSObject::UShortArrayProperty::getAsyncData(v8::Local<v8::Value> &val
         vector = new std::vector<ushort>();
 
         for (std::size_t i = 0; i < count; i++) {
-            vector->push_back((ushort)(Nan::To<v8::Uint32>(arr->Get(i)).ToLocalChecked()->Value()));
+            vector->push_back((ushort)(Nan::To<v8::Uint32>(Nan::Get(arr, i).ToLocalChecked()).ToLocalChecked()->Value()));
         }
 
         valid = true;
@@ -1561,8 +1559,7 @@ v8::Local<v8::Value> AminoJSObject::BooleanProperty::toValue() {
  */
 void* AminoJSObject::BooleanProperty::getAsyncData(v8::Local<v8::Value> &value, bool &valid) {
     if (value->IsBoolean()) {
-        // bool b = value->BooleanValue();
-        bool b = Nan::To<bool>(value).FromJust();
+        bool b = Nan::To<v8::Boolean>(value).ToLocalChecked()->Value();
         bool *res = new bool;
 
         *res = b;
@@ -2227,7 +2224,9 @@ void AminoJSEventObject::processAsyncQueue() {
                     }
 
                     if (!valueItem->obj->handleAsyncUpdate(valueItem)) {
-                        printf("unhandled async update by %s\n", valueItem->obj->getName().c_str());
+                        std::string name = valueItem->obj->getName();
+
+                        printf("unhandled async update by %s\n", name.c_str());
                     }
                 }
                 break;
@@ -2310,7 +2309,9 @@ bool AminoJSEventObject::enqueuePropertyUpdate(AnyProperty *prop, v8::Local<v8::
 
     if (prop->obj->handleSyncUpdate(prop, data)) {
         if (DEBUG_BASE) {
-            printf("-> sync update (value=%s)\n", toString(value).c_str());
+            std::string str = toString(value);
+
+            printf("-> sync update (value=%s)\n", str.c_str());
         }
 
         prop->freeAsyncData(data);

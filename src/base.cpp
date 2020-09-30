@@ -7,9 +7,9 @@
 #include "fonts/utf8-utils.h"
 
 //debug
-#define DEBUG_RENDERER true
-#define DEBUG_FONT_TEXTURE true
-#define DEBUG_FONT_UPDATES true
+#define DEBUG_RENDERER false
+#define DEBUG_FONT_TEXTURE false
+#define DEBUG_FONT_UPDATES false
 
 #define MEASURE_FPS true
 #define SHOW_RENDERER_ERRORS true
@@ -484,9 +484,11 @@ void AminoGfx::measureRenderingEnd() {
         //reset
         fpsStart = 0;
 
-        //optional output on screen
+        //optional output on screen (color: blue)
         if (propShowFPS->value) {
+            printf("\033[0;34m");
             printf("%i FPS (max: %i ms, min: %i ms, avg: %i ms)\n", (int)lastFPS, (int)fpsCycleMax, (int)fpsCycleMin, (int)lastCycleAvg);
+            printf("\033[0m");
         }
     }
 }
@@ -835,8 +837,8 @@ void AminoGfx::fireEvent(v8::Local<v8::Object> &evt) {
             //call
             int argc = 1;
             v8::Local<v8::Value> argv[1] = { evt };
+
             Nan::Call(func, obj, argc, argv);
-            // func->Call(obj, argc, argv);
         }
     }
 }
@@ -1492,7 +1494,9 @@ AminoJSObject* AminoTextFactory::create() {
  */
 void AminoText::updateTexture() {
     if (DEBUG_FONT_UPDATES) {
-        printf("-> update font texture: %s\n", fontSize->font->getFontInfo().c_str());
+        std::string info = fontSize->font->getFontInfo();
+
+        printf("-> update font texture: %s\n", info.c_str());
     }
 
     assert(texture.textureId != INVALID_TEXTURE);

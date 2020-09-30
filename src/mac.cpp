@@ -4,9 +4,9 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define DEBUG_GLFW true
-#define DEBUG_RENDER true
-#define DEBUG_VIDEO_TIMING true
+#define DEBUG_GLFW false
+#define DEBUG_RENDER false
+#define DEBUG_VIDEO_TIMING false
 
 /**
  * Mac AminoGfx implementation.
@@ -144,23 +144,20 @@ private:
      */
     bool getScreenInfo(int &w, int &h, int &refreshRate, bool &fullscreen) override {
         //debug
-        printf("getScreenInfo\n");
+        //printf("getScreenInfo\n");
 
         //get monitor properties
-        // GLFWmonitor* primary = glfwGetPrimaryMonitor();
+        GLFWmonitor *primary = glfwGetPrimaryMonitor();
 
-        // assert(primary);
+        assert(primary);
 
-        // const GLFWvidmode *vidmode = glfwGetVideoMode(primary);
-// const GLFWvidmode *vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        // assert(vidmode);
-printf("getScreenInfo 2\n");
-        w = 2560;
-        h = 1600;
-        refreshRate = 60;
-        // w = vidmode->width;
-        // h = vidmode->height;
-        // refreshRate = vidmode->refreshRate;
+        const GLFWvidmode *vidmode = glfwGetVideoMode(primary);
+
+        assert(vidmode);
+
+        w = vidmode->width;
+        h = vidmode->height;
+        refreshRate = vidmode->refreshRate;
         fullscreen = false;
 
         return true;
@@ -192,7 +189,7 @@ printf("getScreenInfo 2\n");
         /*
          * use OpenGL 2.x
          *
-         * OpenGL 3.2 c hanges:
+         * OpenGL 3.2 changes:
          *
          *   - https://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/UpdatinganApplicationtoSupportOpenGL3/UpdatinganApplicationtoSupportOpenGL3.html#//apple_ref/doc/uid/TP40001987-CH3-SW1
          *
@@ -200,14 +197,10 @@ printf("getScreenInfo 2\n");
          */
 
         //create window
-        // glfwWindowHint(GLFW_DEPTH_BITS, 32); //default
-        // glfwWindowHint(GLFW_SAMPLES, 4); //increase quality
-printf("mac cpp initRenderer() before create windows\n");
-printf("window size: requested=%ix%i\n", (int)propW->value, (int)propH->value);
-// glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_DEPTH_BITS, 32); //default
+        glfwWindowHint(GLFW_SAMPLES, 4); //increase quality
+
         window = glfwCreateWindow(propW->value, propH->value, propTitle->value.c_str(), NULL, NULL);
-printf("mac cpp initRenderer() after create windows\n");
 
         if (!window) {
             //exit on error
@@ -216,7 +209,7 @@ printf("mac cpp initRenderer() after create windows\n");
             glfwTerminate();
             exit(EXIT_FAILURE);
         }
-printf("mac cpp initRenderer() after check windows\n");
+
         //store
         windowMap->insert(std::pair<GLFWwindow *, AminoGfxMac *>(window, this));
 
@@ -928,8 +921,10 @@ void AminoMacVideoPlayer::closeDemuxer() {
     //free demuxer
     if (demuxer) {
         uv_mutex_lock(&frameLock);
+
         delete demuxer;
         demuxer = NULL;
+
         uv_mutex_unlock(&frameLock);
     }
 }
@@ -1110,6 +1105,12 @@ void exitHandler(void *arg) {
     }
 }
 
+void cleanupHook(void*) {
+    if (DEBUG_BASE) {
+        printf("cleanup hook called\n");
+    }
+}
+
 /**
  * Show crash details.
  */
@@ -1147,7 +1148,14 @@ NAN_MODULE_INIT(InitAll) {
     AminoGfx::InitClasses(target);
 
     //exit handler
-    node::AtExit(exitHandler);
+
+    //FIXME cannot get node::Environment* instance
+    //node::AtExit(exitHandler); //deprecated
+    //node::AtExit(info.Env(), exitHandler, nullptr);
+
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+
+    node::AddEnvironmentCleanupHook(isolate, cleanupHook, nullptr);
 }
 
 //entry point

@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-#define DEBUG_FONTS true
+#define DEBUG_FONTS false
 
 //
 // AminoFonts
@@ -176,7 +176,7 @@ void AminoFont::preInit(Nan::NAN_METHOD_ARGS_TYPE info) {
     this->fontData.Reset(bufferObj);
 
     //create atlas
-    atlas = texture_atlas_new(2048, 2048, 1); //depth must be 1
+    atlas = texture_atlas_new(512, 512, 1); //depth must be 1
 
     if (!atlas) {
         Nan::ThrowTypeError("could not create atlas");
@@ -223,7 +223,9 @@ texture_font_t *AminoFont::getFontWithSize(uint32_t size) {
         }
 
         if (DEBUG_FONTS) {
-            printf("-> new font size: %i (%s)\n", size, getFontInfo().c_str());
+            std::string info = getFontInfo();
+
+            printf("-> new font size: %i (%s)\n", size, info.c_str());
         }
     } else {
         fontSize = it->second;

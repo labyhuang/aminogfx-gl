@@ -5,7 +5,7 @@ const opts = {
   fontSize: 96,
   colorBg: '#000000',
   colorMsg: '#00ff00',
-  stepUnit: 1,
+  stepUnit: 5,
   msg: ''
 }
 

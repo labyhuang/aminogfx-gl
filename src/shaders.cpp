@@ -112,6 +112,11 @@ GLuint AnyShader::compileShader(std::string source, const GLenum type) {
         return -1;
     }
 
+#ifdef EGL_GBM
+    //add define
+    source = "#define EGL_GBM\n" + source;
+#endif
+
 #ifdef RPI
     //add GLSL version
     source = "#version 100\n" + source;
@@ -657,6 +662,9 @@ TextureLightingShader::TextureLightingShader() : TextureShader() {
     )";
 
     fragmentShader = R"(
+#ifdef EGL_GBM
+        precision highp float;
+#endif
         varying vec2 uv;
         varying float lightFac;
 
